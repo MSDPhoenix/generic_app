@@ -7,7 +7,15 @@ from flask_app.models.xxx import Xxx
 def dashboard():
     if "user_id" not in session:
         return redirect("/")
-    return render_template("dashboard.html")
+    print("A")
+    print(session)
+    print(type(session))
+    data = {
+        "user_id" : session["user_id"]
+    }
+    user = User.get_by_id(data)
+    xxxs = Xxx.get_all()
+    return render_template("dashboard.html",user=user,xxxs=xxxs)
 
 @app.route("/view_one/")
 def view_one():
@@ -27,17 +35,20 @@ def edit_form():
         return redirect("/")
     return render_template("edit_form.html")
 
-@app.route("/save_xxx/")
+@app.route("/save_xxx/",methods=["POST"])
 def save_xxx():
-
+    if "user_id" not in session:
+        return redirect("/")
     return redirect("/.../")
 
-@app.route("/update_xxx/")
+@app.route("/update_xxx/",methods=["POST"])
 def update_xxx():
-
+    if "user_id" not in session:
+        return redirect("/")
     return redirect("/.../")
 
 @app.route("/delete_xxx/")
 def delete_xxx():
-    
+    if "user_id" not in session:
+        return redirect("/")
     return redirect("/.../")

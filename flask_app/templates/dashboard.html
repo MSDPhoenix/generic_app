@@ -1,9 +1,40 @@
 {% extends "index.html" %}
-
 {% block body %}
-
-
-
-
+<div class="px-5">
+    <div class="d-flex align-items-cente pt-4 pb-1">
+        <h1 class="">Welcome, {{user.first_name}}</h1>
+        <a href="/add_form/" class="ms-auto me-5">create</a>
+        <a href="/logout/" >logout</a>
+    </div>
+    <h5 class="pb-2">All xxxs</h5>
+    <table class="mx-auto table table-striped table-primary border-dark table-hover text-center ">
+        <thead>
+            <tr class="">
+                <th scope="col">aaa</th>
+                <th scope="col">bbb</th>
+                <th scope="col">ccc</th>
+                <th scope="col">ddd</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% if xxxs %}
+                {% for xxx in xxxs %}
+                <tr>
+                    <td>{{xxx.aaa}}</td>
+                    <td>{{xxx.aaa}}</td>
+                    <td>{{xxx.bbb}}</td>
+                    <td>
+                        <a href="/xxxs_one/{{xxx.id}}/">view xxx</a>
+                        {% if user.id == xxx.user_id %}
+                        | <a href="/xxxs_edit/{{xxx.id}}/">edit</a>
+                        | <a href="/xxxs_delete/{{xxx.id}}/">delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock body %}
