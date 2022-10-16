@@ -25,6 +25,13 @@ def validation_succeeded():
 def dashboard():
     if "user_id" not in session:
         return redirect("/")
+    all_users = User.get_all()
+    print("\tN")
+    # print(xxxs)
+    # print(len(xxxs))
+    if len(all_users) == 1:
+        return redirect("/autopopulate/")
+        # xxxs = Xxx.auto_populate()
     return render_template(
         "dashboard.html",
         user = User.get_by_id(session["user_id"]),
@@ -94,5 +101,5 @@ def delete_xxx(xxx_id):
         return redirect("/logout/")
     Xxx.delete(xxx_id)
     print("\n\tE\n")
-    print(f"{xxx.aaa} deleted")
+    print(f"{xxx.aaa} deleted\n")
     return redirect("/dashboard/")

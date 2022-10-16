@@ -10,6 +10,9 @@
         <h1 class="">{{xxx.aaa}}</h1>
         <h3 class="ms-auto pb-0">Posted by: {{xxx.user.first_name}}</h3>
     </div>
+    {% for user in xxx.many_to_many %}
+        <span>{{user.first_name}} {{user.last_name}} - </span>
+    {% endfor %}
     <div class="p-4 border border-3 border-dark">
         <div class="row my-3">
             <p class="col fs-4 fw-bold">Description:</p>

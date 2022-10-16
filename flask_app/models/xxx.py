@@ -21,6 +21,23 @@ class Xxx:
         self.fff = data["fff"]
         self.user_id = data["user_id"]
         self.user = None
+        self.many_to_many = []
+        self.logged_in_user_in_many_to_many = False
+
+    def get_many_to_many(self):
+        data = {"xxx_id" : self.id}
+        query = """
+                SELECT * FROM users
+                JOIN user_has_xxx
+                ON users.id=user_has_xxx.user_id
+                WHERE user_has_xxx.xxx_id=%(xxx_id)s;
+                """
+        result = connectToMySQL(db).query_db(query,data)
+        for row in result:
+            this_user=user.User(row)
+            self.many_to_many.append(this_user)
+            print("\tJ")
+            print(this_user.first_name)
     
     @classmethod
     def get_all(cls):
@@ -31,9 +48,13 @@ class Xxx:
                 """
         result = connectToMySQL(db).query_db(query)
         xxxs = []
+        print("\tP")
         for row in result:
             this_xxx = cls(row)
             this_xxx.user = user.User(row)
+            this_xxx.get_many_to_many()
+            for user  in this_xxx.many_to_many:
+                print(user.id)
             xxxs.append(this_xxx)
         return xxxs
 
@@ -49,6 +70,7 @@ class Xxx:
         result = connectToMySQL(db).query_db(query,data)
         xxx = cls(result[0])
         xxx.user = user.User(result[0])
+        xxx.get_many_to_many()
         return xxx
         
     @classmethod
@@ -71,15 +93,23 @@ class Xxx:
 
     @classmethod
     def delete(cls,xxx_id):
-        data = {"xxx_id" : xxx_id}
-        query = """
-                DELETE FROM xxxs WHERE id=%(xxx_id)s;"
+        # data1 = {"xxx_id" : xxx_id}
+        # query1 = """
+        #         DELETE FROM user_has_xxx 
+        #         WHERE xxx_id=%(xxx_id)s
+        #         """
+        # connectToMySQL(db).query_db(query1,data1)
+        data2 = {"xxx_id" : xxx_id}
+        query2 = """
+                DELETE FROM xxxs 
+                WHERE id=%(xxx_id)s;
                 """
-        connectToMySQL(db).query_db(query,data)
+        connectToMySQL(db).query_db(query2,data2)
+
 
     @staticmethod
     def validate(data):
         is_valid = True
+        print("\n\tCode for 'Xxx.validate()' function is not writtten.\n")
 
         return is_valid
-
