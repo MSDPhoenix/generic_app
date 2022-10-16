@@ -22,21 +22,20 @@ def register():
         **request.form,
         "password" : pw_hash
     }
-    user_id = User.save(data)
-    session["user_id"] = user_id
+    session["user_id"] = User.save(data)
     return redirect("/dashboard/")
 
 @app.route("/login/",methods=["POST"])
 def login():
-    data = {
-        "email" : request.form["email"]
-    }
-    user = User.get_by_email(data)
-    password_correct = bcrypt.check_password_hash(user.password,request.form["password"])
+    user = User.get_by_email(request.form["email"])
+    password_correct = bcrypt.check_password_hash(
+                            user.password,
+                            request.form["password"]
+                            )
     if not user or not  password_correct:
         flash("invalid email/password","login")
         return redirect("/")
-    session.clear()
+    # session.clear()
     session["user_id"] = user.id  
     return redirect("/dashboard/")
 

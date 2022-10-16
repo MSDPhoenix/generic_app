@@ -21,13 +21,13 @@
                 {% for xxx in xxxs %}
                 <tr>
                     <td>{{xxx.aaa}}</td>
-                    <td>{{xxx.aaa}}</td>
                     <td>{{xxx.bbb}}</td>
+                    <td>{{xxx.ccc}}</td>
                     <td>
-                        <a href="/xxxs_one/{{xxx.id}}/">view xxx</a>
+                        <a href="/view_one/{{xxx.id}}/">view xxx</a>
                         {% if user.id == xxx.user_id %}
-                        | <a href="/xxxs_edit/{{xxx.id}}/">edit</a>
-                        | <a href="/xxxs_delete/{{xxx.id}}/">delete</a>
+                        | <a href="/edit_form/{{xxx.id}}/">edit</a>
+                        | <a href="/delete_xxx/{{xxx.id}}/">delete</a>
                         {% endif %}
                     </td>
                 </tr>

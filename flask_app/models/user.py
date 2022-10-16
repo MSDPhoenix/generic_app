@@ -32,7 +32,8 @@ class User:
         return users 
 
     @classmethod
-    def get_by_id(cls,data):
+    def get_by_id(cls,user_id):
+        data = {"user_id":user_id}
         query = """
                 SELECT * FROM users WHERE id = %(user_id)s;
                 """
@@ -41,7 +42,8 @@ class User:
         return user
 
     @classmethod
-    def get_by_email(cls,data):
+    def get_by_email(cls,email):
+        data = {"email":email}
         query = """
                 SELECT * FROM users WHERE email=%(email)s;
                 """
@@ -61,11 +63,13 @@ class User:
 
     @classmethod
     def update(cls,data):
-        pass
+        print("\n\tCode for 'Update User' function is not writtten.\n")
+        
 
     @classmethod
     def delete(cls,data): 
-        pass
+        print("\n\tCode for 'Delete User' function is not writtten.\n")
+        
 
     @staticmethod
     def validate(data):
