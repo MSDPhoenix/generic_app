@@ -6,8 +6,18 @@
         <a href="/add_form/" class="ms-auto me-5">create</a>
         <a href="/logout/" >logout</a>
     </div>
-    <h6>{{user.xxxs}}</h6>
-    <h6>{{user.many_to_many}}</h6>
+    <h6>
+        <span>[one-to-many] - {#{user.xxxs}#}</span>  
+        {% for xxx in user.xxxs %}
+            <span>{{xxx.aaa}}</span>
+        {% endfor %}
+    </h6>
+    <h6>
+        <span>[many-to-many] -  {#{user.many_to_many}#}</span>  
+        {% for xxx in user.many_to_many %}
+            <span>{{xxx.aaa}}</span>
+        {% endfor %}
+    </h6>
     <h5 class="pb-2">All xxxs</h5>
     <table class="mx-auto table table-striped table-primary border-dark table-hover text-center ">
         <thead>
@@ -32,9 +42,9 @@
                         | <a href="/delete_xxx/{{xxx.id}}/">delete</a>
                         {% else %}
                             {% if xxx.logged_in_user_in_many_to_many %}
-                                <a href="/remove_from_many_to_many/{{xxx.id}}/">remove</a>
+                                <a href="/remove_from_many_to_many/{{xxx.id}}/dashboard/">remove</a>
                             {% else %}
-                                <a href="/add_to_many_to_many/{{xxx.id}}/">add</a>
+                                <a href="/add_to_many_to_many/{{xxx.id}}/dashboard/">add</a>
                             {% endif %}
                         {% endif %}
                     </td>

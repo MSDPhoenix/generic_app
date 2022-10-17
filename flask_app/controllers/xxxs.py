@@ -7,7 +7,7 @@ def validation_failed(data):
     session["aaa"] = data["aaa"]
     session["bbb"] = data["bbb"]
     session["ccc"] = data["ccc"]
-    session["ddd"] = data["ddd"]
+    session["eee"] = data["eee"]
 
 def validation_succeeded():
     if "aaa" in session:
@@ -26,12 +26,8 @@ def dashboard():
     if "user_id" not in session:
         return redirect("/")
     all_users = User.get_all()
-    print("\tN")
-    # print(xxxs)
-    # print(len(xxxs))
     if len(all_users) == 1:
         return redirect("/autopopulate/")
-        # xxxs = Xxx.auto_populate()
     return render_template(
         "dashboard.html",
         user = User.get_by_id(session["user_id"]),
@@ -87,8 +83,6 @@ def update_xxx():
         validation_failed(request.form)
         return redirect(f"/edit_form/{request.form['xxx_id']}/")
     validation_succeeded()
-    print("\n\tD\n")
-    print(request.form)
     Xxx.update(request.form)
     return redirect("/dashboard/")
 
@@ -97,8 +91,9 @@ def delete_xxx(xxx_id):
     if "user_id" not in session:
         return redirect("/")
     xxx = Xxx.get_by_id(xxx_id)
-    if xxx.user_id != session["user_id"]:
-        return redirect("/logout/")
+    if not xxx or xxx.user_id != session["user_id"]:
+        session.clear()
+        return redirect("https://www.churchofjesuschrist.org/?lang=eng")
     Xxx.delete(xxx_id)
     print("\n\tE\n")
     print(f"{xxx.aaa} deleted\n")

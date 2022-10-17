@@ -68,6 +68,8 @@ class User:
                 SELECT * FROM users WHERE id = %(user_id)s;
                 """
         result = connectToMySQL(db).query_db(query,data)
+        if len(result) == 0:
+            return False
         user = cls(result[0])
         user.get_xxxs()
         user.get_many_to_many()
@@ -108,7 +110,47 @@ class User:
     @staticmethod
     def validate(data):
         is_valid = True
-        print("\n\tCode for 'User.validate()' function is not writtten.\n")
+
+        if len(data["first_name"]) < 1:
+            flash("First name required","validate")
+            is_valid = False
+        elif len(data["first_name"]) < 2:
+            flash("First name must be at least two letters","validate")
+            is_valid = False
+        elif not data["first_name"].isalpha():
+            flash("First name must contain letters only","validate")
+            is_valid = False
+        
+        if len(data["last_name"]) < 1:
+            flash("Last name required","validate")
+            is_valid = False
+        elif len(data["last_name"]) < 2:
+            flash("Last name must be at least two letters","validate")
+            is_valid = False
+        elif not data["last_name"].isalpha():
+            flash("Last name must contain letters only","validate")
+            is_valid = False
+        
+        if len(data["email"]) < 1:
+            flash("Email required","validate")
+            is_valid = False
+        elif not EMAIL_REGEX.match(data["email"]):
+            flash("Must use valid email format","validate")
+            is_valid = False
+        elif User.get_by_email(data["email"]):
+            print("\tA")
+            flash("Email already registered","validate")
+            is_valid = False
+
+        if len(data["password"]) < 1:
+            flash("Password required","validate")
+            is_valid = False
+        elif len(data["password"]) < 8:
+            flash("Password must be at least 8 characters","validate")
+            is_valid = False
+        elif data["password"] != data["confirm_password"]:
+            flash("Password does not match Confirm Password","validate")
+            is_valid = False
 
         return is_valid
 
@@ -123,7 +165,11 @@ class User:
         connectToMySQL(db).query_db(query,data)
 
     @staticmethod
-    def remove_from_many_to_many(data):
+    def remove_from_many_to_many(xxx_id):
+        data = {
+            "xxx_id" : xxx_id,
+            "user_id" : session["user_id"],
+            }
         query = """
                 DELETE FROM user_has_xxx
                 WHERE user_id=%(user_id)s

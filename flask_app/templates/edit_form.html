@@ -6,7 +6,7 @@
         <a href="/dashboard/" class="ms-auto me-5">back to dashboard</a>
         <a href="/logout/" >logout</a>
     </div>
-    {% with errors = get_flashed_messages(category_filter=["xxx_add"]) %}
+    {% with errors = get_flashed_messages(category_filter=["xxx"]) %}
         {% if errors %}
             {% for message in errors %}
                 <p class="text-danger m-0 p-0">{{message}}</p>

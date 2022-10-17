@@ -28,15 +28,13 @@ def register():
 
 @app.route("/login/",methods=["POST"])
 def login():
-    user = User.get_by_email(request.form["email"])
-    password_correct = bcrypt.check_password_hash(
-                            user.password,
-                            request.form["password"]
-                            )
-    if not user or not  password_correct:
+    user = User.get_by_email(request.form["email2"])
+    if not user or not bcrypt.check_password_hash(user.password,request.form["password2"]):
+        session["email2"] = request.form["email2"]
+        session["password2"] = request.form["password2"]
         flash("invalid email/password","login")
         return redirect("/")
-    # session.clear()
+    session.clear()
     session["user_id"] = user.id  
     return redirect("/dashboard/")
 
@@ -45,8 +43,30 @@ def logout():
     session.clear()
     return redirect("/")
 
+@app.route("/add_to_many_to_many/<int:xxx_id>/<origin>/")
+def add_to_many_to_many(xxx_id,origin):
+    if "user_id" not in session:
+        return redirect("/")
+    data = {
+        "xxx_id" : xxx_id,
+        "user_id" : session["user_id"],
+        }
+    User.add_to_many_to_many(data)
+    return redirect(f"/{origin}/")
+
+@app.route("/remove_from_many_to_many/<int:xxx_id>/<origin>/")
+def remove_from_many_to_many(xxx_id,origin):
+    if "user_id" not in session:
+        return redirect("/")
+    User.remove_from_many_to_many(xxx_id)
+    return redirect(f"/{origin}/")
+
 @app.route("/autopopulate/")
 def autopopulate():
+    all_users = User.get_all()
+    if len(all_users) != 1:
+        session.clear()
+        return redirect("https://www.churchofjesuschrist.org/?lang=eng")
     metadata1 = [
         {
             "first_name" : "Mickey",
@@ -96,63 +116,63 @@ def autopopulate():
             "aaa" : "aaa",
             "bbb" : "bbb",
             "ccc" : "ccc",
-            "eee" : "eee",
-            "user_id" : 2,
+            "eee" : "yes",
+            "user_id" : 1,
         },
         {
             "aaa" : "fff",
             "bbb" : "ggg",
             "ccc" : "hhh",
-            "eee" : "iii",
+            "eee" : "no",
             "user_id" : 2,
         },
         {
             "aaa" : "jjj",
             "bbb" : "kkk",
             "ccc" : "lll",
-            "eee" : "mmm",
+            "eee" : "yes",
             "user_id" : 2,
         },
         {
             "aaa" : "nnn",
             "bbb" : "ooo",
             "ccc" : "ppp",
-            "eee" : "qqq",
-            "user_id" : 3,
+            "eee" : "no",
+            "user_id" : 1,
         },
         {
             "aaa" : "rrr",
             "bbb" : "sss",
             "ccc" : "ttt",
-            "eee" : "uuu",
+            "eee" : "yes",
             "user_id" : 3,
         },
         {
             "aaa" : "vvv",
             "bbb" : "www",
             "ccc" : "xxx",
-            "eee" : "yyy",
+            "eee" : "no",
             "user_id" : 4,
         },
         {
             "aaa" : "zzz",
             "bbb" : "111",
             "ccc" : "222",
-            "eee" : "333",
+            "eee" : "yes",
             "user_id" : 5,
         },
         {
             "aaa" : "444",
             "bbb" : "555",
             "ccc" : "666",
-            "eee" : "777",
-            "user_id" : 3,
+            "eee" : "no",
+            "user_id" : 1,
         },
         {
             "aaa" : "888",
             "bbb" : "999",
             "ccc" : "000",
-            "eee" : "???",
+            "eee" : "yes",
             "user_id" : 6,
         },
     ]
@@ -182,8 +202,6 @@ def autopopulate():
         Xxx.save(data)
     for data in metadata3:
         User.add_to_many_to_many(data)
-
-
     return redirect("/dashboard/")
 
 

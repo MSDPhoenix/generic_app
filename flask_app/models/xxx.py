@@ -1,10 +1,9 @@
-from flask import flash
+from flask import flash,session
 from flask_app.config.mysqlconnection import connectToMySQL 
 from flask_app.models import user
 import re
 from flask_app import app
 from flask_bcrypt import Bcrypt
-
 
 db = "xxx"
 
@@ -36,8 +35,6 @@ class Xxx:
         for row in result:
             this_user=user.User(row)
             self.many_to_many.append(this_user)
-            print("\tJ")
-            print(this_user.first_name)
     
     @classmethod
     def get_all(cls):
@@ -48,13 +45,13 @@ class Xxx:
                 """
         result = connectToMySQL(db).query_db(query)
         xxxs = []
-        print("\tP")
         for row in result:
             this_xxx = cls(row)
             this_xxx.user = user.User(row)
             this_xxx.get_many_to_many()
-            for user  in this_xxx.many_to_many:
-                print(user.id)
+            for one_user in this_xxx.many_to_many:
+                if one_user.id == session["user_id"]:
+                    this_xxx.logged_in_user_in_many_to_many = True
             xxxs.append(this_xxx)
         return xxxs
 
@@ -68,6 +65,8 @@ class Xxx:
                 WHERE xxxs.id = %(xxx_id)s;
                 """
         result = connectToMySQL(db).query_db(query,data)
+        if len(result) == 0:
+            return False
         xxx = cls(result[0])
         xxx.user = user.User(result[0])
         xxx.get_many_to_many()
@@ -110,6 +109,30 @@ class Xxx:
     @staticmethod
     def validate(data):
         is_valid = True
-        print("\n\tCode for 'Xxx.validate()' function is not writtten.\n")
+
+        if len(data["aaa"]) < 1:
+            flash("Name is required","xxx")
+            is_valid = False
+        elif len(data["aaa"]) < 3:
+            flash("Name must be at least 3 letters","xxx")
+            is_valid = False
+        if len(data["bbb"]) < 1:
+            flash("Description required","xxx")
+            is_valid = False
+        elif len(data["bbb"]) < 3:
+            flash("Description must be at least 3 letters","xxx")
+            is_valid = False
+        if len(data["ccc"]) < 1:
+            flash("Instructions required","xxx")
+            is_valid = False
+        elif len(data["ccc"]) < 3:
+            flash("Instructions must be at least 3 letters","xxx")
+            is_valid = False
+        # if len(data["date_made"]) < 1:
+        #     flash("Date cooked/made is required","xxx")
+        #     is_valid = False
+        if "eee" not in data:
+            flash("\"Under 30 minutes?\" is required","xxx")
+            is_valid = False
 
         return is_valid
