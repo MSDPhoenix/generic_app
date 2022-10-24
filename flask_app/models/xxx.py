@@ -70,6 +70,9 @@ class Xxx:
         xxx = cls(result[0])
         xxx.user = user.User(result[0])
         xxx.get_many_to_many()
+        for one_user in xxx.many_to_many:
+            if one_user.id == session["user_id"]:
+                xxx.logged_in_user_in_many_to_many = True
         return xxx
         
     @classmethod
